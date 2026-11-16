@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+
+# Compilados
+www/
+dist/
+.angular/
+coverage/
+*.tsbuildinfo
+
+# Plataformas nativas generadas por Capacitor
+android/
+ios/
+
+# Variables de entorno locales
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
