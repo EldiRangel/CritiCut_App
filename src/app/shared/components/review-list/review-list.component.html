@@ -1,0 +1,45 @@
+@if (reviews().length === 0) {
+  <div class="no-reviews">
+    <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+    <p>Todavía no hay reseñas. ¡Sé el primero en opinar!</p>
+  </div>
+} @else {
+  <div class="review-list">
+    @for (review of reviews(); track review.id) {
+      <article class="review-item" [class.critic]="review.authorRole === 'critic'">
+        <header class="review-head">
+          <div class="avatar" [class.critic]="review.authorRole === 'critic'">
+            {{ initial(review.authorName) }}
+          </div>
+          <div class="who">
+            <strong>{{ review.authorName }}</strong>
+            <span class="role" [class.critic]="review.authorRole === 'critic'">
+              {{ roleLabel(review.authorRole) }}
+            </span>
+          </div>
+          <div [class]="'score ' + scoreClass(review.rating)">
+            <strong>{{ review.rating }}</strong><span>/10</span>
+          </div>
+        </header>
+
+        <p class="comment">{{ review.comment }}</p>
+
+        <footer class="review-foot">
+          <span class="date">
+            {{ review.updatedAt | timeAgo }}@if (isEdited(review)) { · editada }
+          </span>
+          @if (review.userId === currentUserId()) {
+            <div class="actions">
+              <button type="button" class="link" (click)="edit.emit(review)">
+                <ion-icon name="create-outline"></ion-icon> Editar
+              </button>
+              <button type="button" class="link danger" (click)="remove.emit(review)">
+                <ion-icon name="trash-outline"></ion-icon> Eliminar
+              </button>
+            </div>
+          }
+        </footer>
+      </article>
+    }
+  </div>
+}

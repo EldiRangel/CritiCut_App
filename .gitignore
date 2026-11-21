@@ -21,6 +21,10 @@ npm-debug.log*
 yarn-error.log*
 *.log
 
+# Instaladores generados
+*.apk
+*.aab
+
 # Sistema
 .DS_Store
 Thumbs.db

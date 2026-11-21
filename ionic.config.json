@@ -1,0 +1,7 @@
+{
+  "name": "CritiCut",
+  "type": "angular",
+  "integrations": {
+    "capacitor": {}
+  }
+}

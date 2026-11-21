@@ -1,0 +1,171 @@
+.no-reviews {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 28px 16px;
+  border: 1px dashed #e0e0e0;
+  border-radius: 14px;
+  color: var(--app-muted);
+}
+
+.no-reviews ion-icon {
+  font-size: 30px;
+  color: #bdbdbd;
+}
+
+.no-reviews p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-item {
+  border: 1px solid var(--app-border);
+  border-left: 4px solid var(--app-gold);
+  border-radius: 12px;
+  padding: 14px;
+  background: #ffffff;
+}
+
+.review-item.critic {
+  border-left-color: var(--app-red);
+}
+
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff6d9;
+  color: #8a6400;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.avatar.critic {
+  background: #ffece7;
+  color: var(--app-red-dark);
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.who strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--app-ink);
+}
+
+.role {
+  align-self: flex-start;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8a6400;
+  background: #fff6d9;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.role.critic {
+  color: var(--app-red-dark);
+  background: #ffece7;
+}
+
+.score {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  white-space: nowrap;
+}
+
+.score strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.score span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9a9a9a;
+}
+
+.score.high strong {
+  color: var(--app-green);
+}
+
+.score.mid strong {
+  color: #a87a00;
+}
+
+.score.low strong {
+  color: var(--app-red);
+}
+
+.comment {
+  margin: 10px 0;
+  color: #3f3f3f;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.review-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.date {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #9a9a9a;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--app-red);
+  cursor: pointer;
+}
+
+.link.danger {
+  color: #b42318;
+}
+
+.link ion-icon {
+  font-size: 15px;
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cuchillo afilado">
+  <defs>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7FAFC"/>
+      <stop offset=".55" stop-color="#D8DFE6"/>
+      <stop offset="1" stop-color="#A9B4BF"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF5A38"/>
+      <stop offset="1" stop-color="#D92A08"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-45 32 32)">
+    <path
+      d="M5 31c0-3 2-5 5-5h26v10.5c-9 3.2-20 3.2-27.5 1.2C6 36.6 5 34 5 31z"
+      fill="url(#blade)"
+      stroke="#8F9BA7"
+      stroke-width="1.6"
+      stroke-linejoin="round"
+    />
+    <path d="M9.5 29.2h25" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>
+    <rect x="35.5" y="24.8" width="4" height="14.4" rx="1.5" fill="#7C8794"/>
+    <rect x="39.5" y="24" width="18.5" height="16" rx="6.5" fill="url(#handle)"/>
+    <circle cx="45.2" cy="32" r="1.8" fill="#FFFFFF" opacity=".92"/>
+    <circle cx="52.4" cy="32" r="1.8" fill="#FFFFFF" opacity=".92"/>
+  </g>
+</svg>

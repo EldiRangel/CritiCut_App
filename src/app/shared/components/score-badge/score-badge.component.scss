@@ -1,0 +1,83 @@
+.score {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--app-ink);
+  min-width: 0;
+}
+
+img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  min-width: 0;
+}
+
+strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.copy span {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--app-muted);
+  white-space: nowrap;
+}
+
+.size-md {
+  gap: 8px;
+}
+
+.size-md img {
+  width: 30px;
+  height: 30px;
+}
+
+.size-md strong {
+  font-size: 1.2rem;
+}
+
+.size-lg {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.size-lg img {
+  width: 54px;
+  height: 54px;
+}
+
+.size-lg strong {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.size-lg .copy span {
+  font-size: 0.68rem;
+}
+
+.empty img {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+
+.empty strong {
+  color: var(--app-muted);
+}
+
+.cold strong {
+  color: #8a6400;
+}

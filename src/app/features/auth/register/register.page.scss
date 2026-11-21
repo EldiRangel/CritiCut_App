@@ -1,0 +1,238 @@
+.form-header {
+  box-shadow: 0 1px 0 rgba(31, 31, 31, 0.06);
+}
+
+ion-content {
+  --background: radial-gradient(circle at 10% 0%, #ffe9e3 0%, transparent 40%), #f7f7f7;
+}
+
+.auth-shell {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 18px 18px calc(36px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.brand-knife {
+  width: 36px;
+  height: 36px;
+  display: block;
+  filter: drop-shadow(0 8px 14px rgba(250, 50, 10, 0.2));
+}
+
+.brand-name {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  color: var(--app-ink);
+}
+
+.brand-name span {
+  color: var(--app-red);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  color: var(--app-ink);
+}
+
+.brand p {
+  margin: 0 auto;
+  max-width: 340px;
+  color: var(--app-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.auth-card {
+  padding: 20px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--app-ink);
+}
+
+.field {
+  --background: #f6f6f6;
+  --border-radius: 12px;
+  --min-height: 58px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.field ion-icon {
+  color: #8a8a8a;
+}
+
+.field ion-button {
+  --padding-start: 4px;
+  --padding-end: 4px;
+  margin: 0;
+  color: #8a8a8a;
+}
+
+.role-block {
+  margin: 14px 0 4px;
+}
+
+.role-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.role-label {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--app-ink);
+}
+
+.role-selected {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--app-red);
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.role-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
+  padding: 13px;
+  border: 1px solid #e4e4e4;
+  border-radius: 13px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.role-card:hover {
+  border-color: #f0d9a0;
+  background: #fffaf0;
+}
+
+.role-card.critic:hover {
+  border-color: #ffc4b8;
+  background: #fff7f5;
+}
+
+.role-card.active {
+  border-color: var(--app-gold);
+  background: #fffaf0;
+  box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.18);
+}
+
+.role-card.critic.active {
+  border-color: var(--app-red);
+  background: #fff7f5;
+  box-shadow: 0 0 0 2px rgba(250, 50, 10, 0.12);
+}
+
+.role-card img {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 2px;
+}
+
+.role-card strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--app-ink);
+}
+
+.role-card span:not(.check) {
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--app-muted);
+}
+
+.check {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  color: #b7791f;
+  font-size: 20px;
+  line-height: 0;
+}
+
+.role-card.critic .check {
+  color: var(--app-red);
+}
+
+.register-error {
+  margin: 10px 0 0;
+}
+
+.submit {
+  margin-top: 16px;
+  height: 48px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  --border-radius: 12px;
+  --box-shadow: 0 10px 22px rgba(250, 50, 10, 0.24);
+}
+
+.switch {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--app-muted);
+}
+
+.switch a {
+  color: var(--app-red);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 400px) {
+  .role-cards {
+    grid-template-columns: 1fr;
+  }
+}

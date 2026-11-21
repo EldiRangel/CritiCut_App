@@ -1,0 +1,198 @@
+<ion-header class="ion-no-border profile-header">
+  <ion-toolbar>
+    <ion-title>Mi perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-shell profile-shell">
+    <section class="hero">
+      <img class="hero-mark" [src]="roleIcon()" alt="" aria-hidden="true" />
+      <div class="hero-inner">
+        <div class="avatar">{{ initials() }}</div>
+        <div class="identity">
+          <span class="role-badge" [class.critic]="user()?.role === 'critic'">
+            <img [src]="roleIcon()" alt="" />
+            {{ roleLabel() }}
+          </span>
+          <h1>{{ user()?.name }}</h1>
+          <p>{{ user()?.email }}</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="stat surface">
+        <strong>{{ reviewCount() }}</strong>
+        <span>Reseñas</span>
+      </div>
+      <div class="stat surface">
+        <strong>{{ reviewCount() > 0 ? (averageGiven() | number: '1.1-1') : '—' }}</strong>
+        <span>Promedio</span>
+      </div>
+      <div class="stat surface">
+        <strong>{{ uniqueTitles() }}</strong>
+        <span>Títulos</span>
+      </div>
+    </div>
+
+    <section class="surface section">
+      <div class="section-head">
+        <h2><ion-icon name="chatbubble-ellipses-outline"></ion-icon> Mis reseñas</h2>
+        <span class="pill">{{ reviewCount() }}</span>
+      </div>
+
+      @if (myReviewItems().length === 0) {
+        <div class="history-empty">
+          <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+          <div>
+            <h3>Aún no has escrito reseñas</h3>
+            <p class="muted">Explora tu colección y comparte tu opinión sobre un título.</p>
+          </div>
+          <ion-button size="small" (click)="goExplore()">Explorar</ion-button>
+        </div>
+      } @else {
+        <div class="history">
+          @for (item of myReviewItems(); track item.review.id) {
+            <article
+              class="history-item"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'Ver ficha de ' + (item.media?.title || 'título')"
+              (click)="openMedia(item.review.mediaId)"
+              (keyup.enter)="openMedia(item.review.mediaId)"
+            >
+              <div class="history-poster">
+                @if (item.media; as media) {
+                  @if (media.posterPath) {
+                    <img
+                      [src]="posterUrl(media.posterPath)"
+                      [alt]="'Carátula de ' + media.title"
+                      loading="lazy"
+                    />
+                  } @else {
+                    <div class="poster-fallback">{{ media.title.charAt(0) }}</div>
+                  }
+                } @else {
+                  <div class="poster-fallback">?</div>
+                }
+              </div>
+
+              <div class="history-copy">
+                <div class="history-top">
+                  <h3>{{ item.media?.title || 'Título no disponible' }}</h3>
+                  <span
+                    class="rating"
+                    [class.fresh]="item.review.rating >= 6"
+                    [class.rotten]="item.review.rating < 6"
+                  >
+                    {{ item.review.rating }}<small>/10</small>
+                  </span>
+                </div>
+
+                <p class="history-meta">
+                  @if (item.media; as media) {
+                    {{ typeLabel(media.type) }} · {{ yearFor(media.releaseDate) }} ·
+                  }
+                  {{ item.review.updatedAt | timeAgo }}
+                </p>
+
+                <p class="history-comment">{{ item.review.comment }}</p>
+
+                <div class="history-foot">
+                  <button
+                    type="button"
+                    class="edit-link"
+                    (click)="editReview(item.review); $event.stopPropagation()"
+                  >
+                    <ion-icon name="create-outline"></ion-icon>
+                    Editar reseña
+                  </button>
+                  <span class="open-link">
+                    Ver ficha
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                  </span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="surface section">
+      <div class="section-head">
+        <h2><ion-icon name="person-outline"></ion-icon> Datos de la cuenta</h2>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <ion-item class="field" lines="none">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input
+            label="Nombre"
+            labelPlacement="stacked"
+            formControlName="name"
+            placeholder="Tu nombre, sin espacios"
+            [attr.maxlength]="limits.nameMax"
+          ></ion-input>
+        </ion-item>
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <p class="form-error">
+            El nombre debe tener entre {{ limits.nameMin }} y {{ limits.nameMax }} caracteres y no
+            puede contener espacios.
+          </p>
+        }
+
+        <ion-item class="field" lines="none">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input
+            label="Correo"
+            labelPlacement="stacked"
+            type="email"
+            formControlName="email"
+            placeholder="tucorreo@ejemplo.com"
+            [attr.maxlength]="limits.emailMax"
+          ></ion-input>
+        </ion-item>
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="form-error">Ingresa un correo válido.</p>
+        }
+
+        @if (message()) {
+          <p class="banner" [class.error]="message()?.type === 'error'">{{ message()?.text }}</p>
+        }
+
+        <ion-button class="save-btn" expand="block" type="submit" [disabled]="saving()">
+          @if (saving()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Guardar cambios
+          }
+        </ion-button>
+      </form>
+    </section>
+
+    <section class="surface section">
+      <div class="section-head">
+        <h2><ion-icon name="log-out-outline"></ion-icon> Sesión</h2>
+      </div>
+      <p class="muted">Cierra sesión si vas a dejar de usar este dispositivo.</p>
+      <ion-button expand="block" fill="outline" color="medium" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar sesión
+      </ion-button>
+    </section>
+
+    <section class="surface section danger-zone">
+      <div class="section-head">
+        <h2><ion-icon name="trash-outline"></ion-icon> Eliminar cuenta</h2>
+      </div>
+      <p class="muted">
+        Si eliminas tu cuenta, también se borrarán tus reseñas. Esta acción es permanente.
+      </p>
+      <ion-button expand="block" color="danger" fill="outline" (click)="confirmDelete()">
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Eliminar mi cuenta
+      </ion-button>
+    </section>
+  </div>
+</ion-content>

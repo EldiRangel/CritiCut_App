@@ -1,0 +1,11 @@
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: #f5b301;
+  line-height: 1;
+}
+
+ion-icon {
+  flex-shrink: 0;
+}

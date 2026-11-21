@@ -1,0 +1,243 @@
+<ion-header class="ion-no-border detail-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/explore" text="Atrás"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ media()?.title || 'Detalle' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (media(); as item) {
+    <section class="hero">
+      <div
+        class="hero-bg"
+        [style.background-image]="
+          heroImage()
+            ? 'url(' + heroImage() + ')'
+            : 'linear-gradient(135deg, #1f1f1f 0%, #7f1d1d 100%)'
+        "
+      ></div>
+      <div class="hero-shade"></div>
+
+      <div class="hero-inner page-shell">
+        <div class="poster">
+          @if (posterSrc()) {
+            <img
+              [src]="posterSrc()"
+              [alt]="'Carátula de ' + item.title"
+              (error)="imageFailed.set(true)"
+            />
+          } @else {
+            <div class="poster-fallback">
+              <ion-icon name="film-outline"></ion-icon>
+            </div>
+          }
+        </div>
+
+        <div class="hero-info">
+          <span class="hero-kicker">{{ typeLabel() }}</span>
+          <h1>{{ item.title }}</h1>
+          <p class="meta">
+            <span><ion-icon name="calendar-outline"></ion-icon> {{ releaseDateLabel() }}</span>
+            @if (runtimeLabel()) {
+              <span><ion-icon name="time-outline"></ion-icon> {{ runtimeLabel() }}</span>
+            }
+            @if (item.tmdbRating > 0) {
+              <span class="tmdb">TMDB {{ item.tmdbRating | number: '1.1-1' }}</span>
+            }
+          </p>
+          <div class="genres">
+            @for (genre of item.genres; track genre) {
+              <span class="tag">{{ genre }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="page-shell detail-body">
+      <section class="scores">
+        <div class="score-card surface">
+          <app-score-badge
+            [score]="criticRating().average"
+            kind="critic"
+            size="lg"
+            [showLabel]="true"
+          ></app-score-badge>
+          <p class="score-detail">{{ criticRating().count }} reseña(s) de críticos</p>
+          @if (criticRating().count > 0) {
+            <span
+              class="state"
+              [class.fresh]="criticRating().average >= 6"
+              [class.rotten]="criticRating().average < 6"
+            >
+              {{ criticRating().average >= 6 ? 'Afilado' : 'Mellado' }}
+            </span>
+          } @else {
+            <span class="state empty">Sin críticas</span>
+          }
+        </div>
+
+        <div class="score-card surface">
+          <app-score-badge
+            [score]="userRating().average"
+            kind="audience"
+            size="lg"
+            [showLabel]="true"
+          ></app-score-badge>
+          <p class="score-detail">{{ userRating().count }} reseña(s) de usuarios</p>
+          @if (userRating().count > 0) {
+            <span class="state" [class.hot]="userRating().average >= 6" [class.cold]="userRating().average < 6">
+              {{ userRating().average >= 6 ? 'Caliente' : 'Frío' }}
+            </span>
+          } @else {
+            <span class="state empty">Sin reseñas</span>
+          }
+        </div>
+      </section>
+
+      <section class="surface section">
+        <div class="section-head">
+          <h2>Sinopsis</h2>
+        </div>
+        <p class="synopsis">{{ item.overview }}</p>
+      </section>
+
+      @if (topCriticReview(); as quote) {
+        <section class="consensus critic">
+          <img src="assets/icons/knife.svg" alt="" />
+          <div>
+            <span class="consensus-kicker">Lo que dice la crítica</span>
+            <p>“{{ quote.comment }}”</p>
+            <span class="consensus-author">{{ quote.authorName }} · {{ quote.rating }}/10</span>
+          </div>
+        </section>
+      }
+
+      @if (topUserReview(); as quote) {
+        <section class="consensus audience">
+          <img src="assets/icons/popcorn.svg" alt="" />
+          <div>
+            <span class="consensus-kicker">Lo que dice la audiencia</span>
+            <p>“{{ quote.comment }}”</p>
+            <span class="consensus-author">{{ quote.authorName }} · {{ quote.rating }}/10</span>
+          </div>
+        </section>
+      }
+
+      <section class="surface section">
+        <div class="section-head">
+          <h2><ion-icon name="people-outline"></ion-icon> Reparto principal</h2>
+        </div>
+        @if (item.actors.length > 0) {
+          <div class="cast-grid">
+            @for (actor of item.actors; track actor) {
+              <div class="cast-item">
+                <span class="cast-avatar">{{ initials(actor) }}</span>
+                <span class="cast-name">{{ actor }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="muted">Sin información de reparto.</p>
+        }
+      </section>
+
+      <section class="surface section">
+        <div class="section-head">
+          <h2>Tu reseña</h2>
+          @if (!myReview()) {
+            <ion-button size="small" (click)="writeReview()">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Escribir
+            </ion-button>
+          }
+        </div>
+
+        @if (myReview(); as mine) {
+          <div class="my-review">
+            <div class="my-review-head">
+              <div class="my-score">
+                <app-star-rating [rating]="mine.rating" [size]="18"></app-star-rating>
+                <strong>{{ mine.rating }}/10</strong>
+              </div>
+              <div class="my-actions">
+                <ion-button size="small" fill="outline" (click)="editReview(mine)">
+                  Editar
+                </ion-button>
+                <ion-button size="small" color="danger" fill="clear" (click)="removeReview(mine)">
+                  Eliminar
+                </ion-button>
+              </div>
+            </div>
+            <p>{{ mine.comment }}</p>
+          </div>
+        } @else {
+          <p class="muted">
+            Aún no has calificado este título. Comparte tu opinión y ayuda a completar el
+            promedio.
+          </p>
+        }
+      </section>
+
+      <section class="surface section">
+        <div class="section-head reviews-head">
+          <h2><ion-icon name="chatbubble-ellipses-outline"></ion-icon> Reseñas de la comunidad</h2>
+          <span class="pill">{{ reviews().length }}</span>
+        </div>
+
+        <ion-segment
+          class="review-filter"
+          [value]="reviewFilter()"
+          (ionChange)="onReviewFilterChange($event)"
+        >
+          <ion-segment-button value="all">
+            <ion-label>Todas ({{ reviews().length }})</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="critic">
+            <ion-label>Críticos ({{ criticCount() }})</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="user">
+            <ion-label>Usuarios ({{ userCount() }})</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
+        <app-review-list
+          [reviews]="filteredReviews()"
+          [currentUserId]="currentUserId()"
+          (edit)="editReview($event)"
+          (remove)="removeReview($event)"
+        ></app-review-list>
+      </section>
+    </div>
+  } @else {
+    <app-empty-state
+      icon="alert-circle-outline"
+      title="Título no encontrado"
+      message="Este título no está en tu catálogo."
+      actionLabel="Volver a explorar"
+      (action)="goBack()"
+    ></app-empty-state>
+  }
+</ion-content>
+
+@if (media()) {
+  <ion-footer class="ion-no-border detail-footer">
+    <ion-toolbar>
+      <div class="footer-inner">
+        @if (myReview(); as mine) {
+          <ion-button expand="block" fill="outline" (click)="editReview(mine)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar mi reseña
+          </ion-button>
+        } @else {
+          <ion-button expand="block" (click)="writeReview()">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Escribir mi reseña
+          </ion-button>
+        }
+      </div>
+    </ion-toolbar>
+  </ion-footer>
+}

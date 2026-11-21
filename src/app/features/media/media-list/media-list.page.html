@@ -1,0 +1,228 @@
+<ion-header class="ion-no-border app-header">
+  <ion-toolbar class="brand-toolbar">
+    <div class="brand-row">
+      <div class="brand">
+        <img src="assets/icons/knife.svg" alt="" class="brand-icon" />
+        <span class="brand-name">Criti<span>Cut</span></span>
+      </div>
+      <button
+        type="button"
+        class="avatar-btn"
+        (click)="goToProfile()"
+        [attr.aria-label]="'Abrir perfil de ' + firstName()"
+      >
+        {{ initials() }}
+      </button>
+    </div>
+  </ion-toolbar>
+
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar
+      class="app-search"
+      placeholder="Busca por título..."
+      [debounce]="150"
+      [value]="search()"
+      (ionInput)="onSearchInput($event)"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-shell explore-shell">
+    <div class="explore-intro">
+      <span class="kicker">Hola, {{ firstName() }}</span>
+      <p class="muted">
+        {{ media().length }} títulos · {{ totalReviews() }} reseñas ·
+        {{ criticCount() }} críticos
+      </p>
+    </div>
+
+    @if (featured(); as item) {
+      <section
+        class="featured"
+        role="button"
+        tabindex="0"
+        (click)="openMedia(item.id)"
+        (keyup.enter)="openMedia(item.id)"
+      >
+        <div class="featured-bg" [style.background-image]="featuredImage(item)"></div>
+        <div class="featured-shade"></div>
+        <div class="featured-content">
+          <span class="featured-kicker">Destacado</span>
+          <h1>{{ item.title }}</h1>
+          <p class="featured-meta">
+            {{ yearFor(item) }} · {{ typeLabelFor(item) }} · {{ item.genres[0] || 'Cine' }}
+          </p>
+          <div class="featured-scores">
+            <app-score-badge
+              [score]="featuredStats().critic.average"
+              kind="critic"
+              size="md"
+              [showLabel]="true"
+            ></app-score-badge>
+            <app-score-badge
+              [score]="featuredStats().audience.average"
+              kind="audience"
+              size="md"
+              [showLabel]="true"
+            ></app-score-badge>
+          </div>
+          <span class="featured-cta">
+            Ver ficha
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </span>
+        </div>
+      </section>
+    }
+
+    <nav class="type-tabs" aria-label="Tipo de contenido">
+      <button
+        type="button"
+        [class.active]="typeFilter() === 'all'"
+        (click)="typeFilter.set('all')"
+      >
+        Todo
+      </button>
+      <button
+        type="button"
+        [class.active]="typeFilter() === 'movie'"
+        (click)="typeFilter.set('movie')"
+      >
+        Películas
+      </button>
+      <button
+        type="button"
+        [class.active]="typeFilter() === 'tv'"
+        (click)="typeFilter.set('tv')"
+      >
+        Series
+      </button>
+    </nav>
+
+    <div class="chip-scroll" aria-label="Categorías">
+      @for (cat of categories(); track cat) {
+        <button
+          type="button"
+          class="chip"
+          [class.active]="category() === cat"
+          (click)="category.set(cat)"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <div class="filter-bar">
+      <button
+        type="button"
+        class="filter-toggle"
+        [class.active]="showFilters() || activeFilters() > 0"
+        (click)="showFilters.set(!showFilters())"
+      >
+        <ion-icon name="options-outline"></ion-icon>
+        Filtros
+        @if (activeFilters() > 0) {
+          <span class="filter-count">{{ activeFilters() }}</span>
+        }
+      </button>
+
+      <span class="results-count">{{ filtered().length }} título(s)</span>
+
+      <ion-select
+        class="sort-select"
+        interface="popover"
+        [value]="sort()"
+        (ionChange)="onSortChange($event)"
+        aria-label="Ordenar por"
+      >
+        <ion-select-option value="rating-desc">Puntaje ↓</ion-select-option>
+        <ion-select-option value="rating-asc">Puntaje ↑</ion-select-option>
+        <ion-select-option value="date-desc">Recientes</ion-select-option>
+        <ion-select-option value="date-asc">Antiguos</ion-select-option>
+      </ion-select>
+    </div>
+
+    @if (showFilters()) {
+      <div class="filter-panel surface">
+        <div class="filter-grid">
+          <div class="filter-field">
+            <label>Año</label>
+            <ion-select
+              interface="popover"
+              [value]="year()"
+              (ionChange)="onYearChange($event)"
+              aria-label="Filtrar por año"
+            >
+              <ion-select-option value="Todos">Todos</ion-select-option>
+              @for (year of years(); track year) {
+                <ion-select-option [value]="year">{{ year }}</ion-select-option>
+              }
+            </ion-select>
+          </div>
+
+          <div class="filter-field">
+            <label>Puntaje mínimo</label>
+            <ion-select
+              interface="popover"
+              [value]="minRating()"
+              (ionChange)="onRatingChange($event)"
+              aria-label="Filtrar por puntaje mínimo"
+            >
+              <ion-select-option [value]="0">Cualquiera</ion-select-option>
+              <ion-select-option [value]="5">5 o más</ion-select-option>
+              <ion-select-option [value]="6">6 o más</ion-select-option>
+              <ion-select-option [value]="7">7 o más</ion-select-option>
+              <ion-select-option [value]="8">8 o más</ion-select-option>
+              <ion-select-option [value]="9">9 o más</ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+
+        <button type="button" class="clear-filters" (click)="clearFilters()">
+          Limpiar filtros
+        </button>
+      </div>
+    }
+
+    <div class="section-head collection-head">
+      <div>
+        <h2>Tu colección</h2>
+        <p class="muted">{{ filtered().length }} de {{ media().length }} títulos</p>
+      </div>
+      <button type="button" class="add-link" (click)="goToSearch()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        Agregar
+      </button>
+    </div>
+
+    @if (media().length === 0) {
+      <app-empty-state
+        icon="film-outline"
+        title="Tu colección está vacía"
+        message="Busca películas y series en TMDB para empezar a reseñarlas."
+        actionLabel="Buscar en TMDB"
+        (action)="goToSearch()"
+      ></app-empty-state>
+    } @else if (filtered().length === 0) {
+      <app-empty-state
+        icon="search-outline"
+        title="Sin coincidencias"
+        message="No hay títulos con esos filtros. Prueba a limpiarlos."
+        actionLabel="Limpiar filtros"
+        (action)="clearFilters()"
+      ></app-empty-state>
+    } @else {
+      <div class="grid">
+        @for (item of filtered(); track item.id) {
+          <app-media-card
+            [media]="item"
+            [criticAverage]="criticAverageFor(item.id)"
+            [audienceAverage]="userAverageFor(item.id)"
+            [count]="countFor(item.id)"
+            (selected)="openMedia($event)"
+          ></app-media-card>
+        }
+      </div>
+    }
+  </div>
+</ion-content>

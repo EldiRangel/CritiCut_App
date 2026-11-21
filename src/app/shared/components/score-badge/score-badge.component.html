@@ -1,0 +1,15 @@
+<div
+  class="score"
+  [class]="'score ' + kind() + ' size-' + size()"
+  [class.empty]="!hasScore()"
+  [class.rotten]="kind() === 'critic' && !fresh()"
+  [class.cold]="kind() === 'audience' && percent() < 60"
+>
+  <img [src]="icon()" alt="" aria-hidden="true" />
+  <div class="copy">
+    <strong>{{ hasScore() ? percent() + '%' : '—' }}</strong>
+    @if (showLabel()) {
+      <span>{{ hasScore() ? (label() ?? defaultLabel()) : 'Sin reseñas' }}</span>
+    }
+  </div>
+</div>

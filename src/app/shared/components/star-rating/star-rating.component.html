@@ -1,0 +1,5 @@
+<div class="stars" [attr.aria-label]="'Puntuación ' + rating() + ' de 10'">
+  @for (icon of icons(); track $index) {
+    <ion-icon [name]="icon" [style.font-size.px]="size()"></ion-icon>
+  }
+</div>

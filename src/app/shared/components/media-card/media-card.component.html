@@ -1,0 +1,39 @@
+<article
+  class="media-card"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'Ver ficha de ' + media().title"
+  (click)="open()"
+  (keyup.enter)="open()"
+>
+  <div class="poster">
+    @if (posterUrl()) {
+      <img
+        [src]="posterUrl()"
+        [alt]="'Carátula de ' + media().title"
+        loading="lazy"
+        (error)="imageFailed.set(true)"
+      />
+    } @else {
+      <div class="poster-fallback">
+        <ion-icon name="film-outline"></ion-icon>
+      </div>
+    }
+    <span class="type-badge">{{ typeLabel() }}</span>
+    @if (count() === 0) {
+      <span class="new-badge">Nuevo</span>
+    }
+  </div>
+
+  <div class="info">
+    <h3>{{ media().title }}</h3>
+    <p class="meta">{{ year() }} · {{ genre() }}</p>
+
+    <div class="scores">
+      <app-score-badge [score]="criticAverage()" kind="critic" size="sm"></app-score-badge>
+      <app-score-badge [score]="audienceAverage()" kind="audience" size="sm"></app-score-badge>
+    </div>
+
+    <p class="reviews">{{ reviewLabel() }}</p>
+  </div>
+</article>

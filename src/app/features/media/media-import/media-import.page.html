@@ -1,0 +1,186 @@
+<ion-header class="ion-no-border import-header">
+  <ion-toolbar class="brand-toolbar">
+    <div class="brand-row">
+      <div class="brand">
+        <img src="assets/icons/knife.svg" alt="" class="brand-icon" />
+        <span class="brand-name">Criti<span>Cut</span></span>
+      </div>
+      <span class="pill red">TMDB</span>
+    </div>
+  </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <div class="search-row">
+      <ion-searchbar
+        class="app-search"
+        placeholder="Ej. Inception, Breaking Bad..."
+        [debounce]="0"
+        [value]="query()"
+        (ionInput)="onSearchInput($event)"
+        (keydown.enter)="search()"
+      ></ion-searchbar>
+      <ion-button class="search-btn" [disabled]="searching()" (click)="search()">
+        Buscar
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-shell import-shell">
+    <section class="intro">
+      <img class="intro-mark" src="assets/icons/knife.svg" alt="" aria-hidden="true" />
+      <span class="intro-kicker">Catálogo real · TMDB</span>
+      <h1>Agrega películas y series</h1>
+      <p>
+        Busca por nombre e importa la ficha completa: sinopsis, reparto, carátula y fecha.
+        Después podrás calificarla.
+      </p>
+    </section>
+
+    @if (!hasApiKey) {
+      <section class="surface notice">
+        <ion-icon name="key-outline"></ion-icon>
+        <div>
+          <h3>Configura tu API key de TMDB</h3>
+          <p>
+            Abre <code>src/environments/environment.ts</code> y reemplaza
+            <code>TU_API_KEY_AQUI</code> por tu clave gratuita de
+            <strong>themoviedb.org</strong>.
+          </p>
+        </div>
+      </section>
+    }
+
+    @if (!searched() && !searching()) {
+      <section class="suggestions">
+        <span class="suggest-label">Prueba con</span>
+        <div class="chip-row">
+          @for (term of suggestions; track term) {
+            <button type="button" class="chip" (click)="quickSearch(term)">
+              {{ term }}
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    @if (error()) {
+      <p class="banner error import-error">{{ error() }}</p>
+    }
+
+    @if (searching()) {
+      <div class="results" aria-busy="true" aria-label="Buscando en TMDB">
+        @for (item of skeletons; track item) {
+          <div class="result surface skeleton-card">
+            <div class="poster skeleton"></div>
+            <div class="info">
+              <span class="skeleton line w30"></span>
+              <span class="skeleton line w70"></span>
+              <span class="skeleton line w100"></span>
+              <span class="skeleton line w90"></span>
+              <span class="skeleton pill-sk"></span>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (results().length > 0) {
+      <div class="results-head">
+        <h2>Resultados</h2>
+        <span class="muted">{{ results().length }} título(s) en TMDB</span>
+      </div>
+
+      <div class="results">
+        @for (result of results(); track result.media_type + '-' + result.id) {
+          <article class="result surface" [class.saved]="localIdFor(result)">
+            <div class="poster">
+              @if (posterUrl(result)) {
+                <img
+                  [src]="posterUrl(result)"
+                  [alt]="'Carátula de ' + resultTitle(result)"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="poster-fallback">
+                  <ion-icon name="film-outline"></ion-icon>
+                </div>
+              }
+            </div>
+
+            <div class="info">
+              <div class="result-top">
+                <span class="type">
+                  {{ typeLabel(result) }}@if (resultYear(result)) { · {{ resultYear(result) }} }
+                </span>
+                <span class="tmdb-score">TMDB {{ result.vote_average | number: '1.1-1' }}</span>
+              </div>
+
+              <h3>{{ resultTitle(result) }}</h3>
+              <p>{{ result.overview || 'Sin sinopsis disponible.' }}</p>
+
+              <div class="result-actions">
+                @if (localIdFor(result)) {
+                  <span class="saved-pill">
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                    En tu colección
+                  </span>
+                  <ion-button size="small" fill="outline" (click)="openLocal(result)">
+                    Ver ficha
+                  </ion-button>
+                } @else {
+                  <ion-button
+                    size="small"
+                    class="add-btn"
+                    [disabled]="isAdding(result)"
+                    (click)="add(result)"
+                  >
+                    @if (isAdding(result)) {
+                      <ion-spinner name="crescent"></ion-spinner>
+                    } @else {
+                      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                      Agregar a mi colección
+                    }
+                  </ion-button>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (searched()) {
+      <app-empty-state
+        icon="search-outline"
+        title="Sin resultados"
+        message="No encontramos coincidencias en TMDB. Prueba con otro nombre."
+      ></app-empty-state>
+    } @else {
+      <section class="steps surface">
+        <div class="section-head">
+          <h2>Cómo funciona</h2>
+        </div>
+        <ol>
+          <li>
+            <span class="step-num">1</span>
+            <div>
+              <strong>Busca en TMDB</strong>
+              <p>Escribe el nombre de una película o serie y pulsa Buscar.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <div>
+              <strong>Agrega a tu colección</strong>
+              <p>Importamos sinopsis, carátula, reparto y fecha de estreno.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <div>
+              <strong>Califica y opina</strong>
+              <p>Tu reseña suma al Criticómetro de críticos o a la audiencia.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+    }
+  </div>
+</ion-content>

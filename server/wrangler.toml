@@ -1,0 +1,10 @@
+name = "criticut-api"
+main = "src/index.ts"
+compatibility_date = "2026-11-20"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "criticut-db"
+database_id = "e769d0bc-be02-4162-bac9-6bfd7747340b"
+migrations_dir = "migrations"
